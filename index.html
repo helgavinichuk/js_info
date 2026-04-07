@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>JavaScript Теория | Стиль CSS Grid презентации</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Контейнер презентации (слайдер) */
+        .presentation-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Горизонтальные слайды */
+        .slides {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 3rem 4rem;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            scrollbar-width: thin;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: #2d2d44;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: #6c63ff;
+            border-radius: 10px;
+        }
+
+        /* Карточка содержимого (blur + стекло) */
+        .slide-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Типографика в стиле grid */
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #fff, #a0a0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: #ffd966;
+            border-left: 6px solid #6c63ff;
+            padding-left: 20px;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            color: #ddd;
+            margin: 1rem 0 0.8rem;
+        }
+
+        .title-slide h1 {
+            font-size: 4.5rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .title-slide .sub {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #ccc;
+            margin-top: 1rem;
+        }
+
+        p, li {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+            color: #f0f0f0;
+        }
+
+        ul, .code-block {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Кодовые блоки — как в grid презентации */
+        .code-block {
+            background: #0a0a1a;
+            padding: 1rem;
+            border-radius: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            border-left: 4px solid #6c63ff;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin: 1rem 0;
+        }
+
+        pre {
+            background: #0a0a1a;
+            padding: 1rem;
+            border-radius: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            border-left: 4px solid #6c63ff;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin: 1rem 0;
+            color: #e0e0e0;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            background: rgba(108, 99, 255, 0.2);
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            background: #6c63ff;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            display: inline-block;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Демо-сетки и карточки */
+        .grid-demo {
+            display: grid;
+            background: #2d2d44;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 24px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .grid-demo > div {
+            background: #6c63ff;
+            padding: 1rem;
+            border-radius: 16px;
+            transition: all 0.2s;
+        }
+
+        .two-col {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .three-col {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Специальные карточки внутри слайдов */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: rgba(10, 10, 30, 0.7);
+            border-radius: 24px;
+            padding: 1.2rem;
+            border: 1px solid rgba(108, 99, 255, 0.4);
+            backdrop-filter: blur(4px);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #a0a0ff;
+        }
+
+        .example-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            margin: 1.2rem 0;
+            border-left: 3px solid #6c63ff;
+        }
+
+        hr {
+            border-color: rgba(108, 99, 255, 0.4);
+            margin: 1.5rem 0;
+        }
+
+        /* Навигация */
+        .nav-controls {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        button {
+            background: rgba(108, 99, 255, 0.8);
+            border: none;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 60px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        button:hover {
+            background: #8b84ff;
+            transform: scale(1.02);
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(4px);
+            z-index: 100;
+        }
+
+        @media (max-width: 700px) {
+            .slide {
+                padding: 1.5rem;
+            }
+            .slide-content {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            p, li {
+                font-size: 1rem;
+            }
+            pre, .code-block {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="presentation-container">
+    <div class="slides" id="slidesContainer">
+        <!-- Слайд 1: Титульный JavaScript -->
+        <div class="slide title-slide">
+            <div class="slide-content">
+                <h1>📜 JavaScript. Теория</h1>
+                <div class="sub">Основы языка: переменные, комментарии, консоль, let/const</div>
+                <div style="margin-top: 3rem; text-align: center;">
+                    <span class="badge">Мощный язык</span>
+                    <span class="badge">Веб-интерактивность</span>
+                </div>
+                <p style="margin-top: 3rem; text-align: center;">← →  или кнопки для навигации</p>
+            </div>
+        </div>
+
+        <!-- Слайд 2: Куда писать код? -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>📝 Куда писать JavaScript-код?</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>🧪 1. Консоль браузера</h3>
+                        <p>Мгновенная проверка: <code>F12</code> → вкладка Console</p>
+                        <div class="code-block">console.log("Привет, мир!");</div>
+                    </div>
+                    <div class="card">
+                        <h3>📁 2. HTML-файл (&lt;script&gt;)</h3>
+                        <p>Код внутри тега script</p>
+                        <div class="code-block">&lt;script&gt; alert("Hello"); &lt;/script&gt;</div>
+                    </div>
+                    <div class="card">
+                        <h3>🗄️ 3. Внешний .js файл</h3>
+                        <p>Подключение через src</p>
+                        <div class="code-block">&lt;script src="app.js"&gt;&lt;/script&gt;</div>
+                    </div>
+                </div>
+                <div class="example-block">
+                    <p>⭐ <strong>Совет:</strong> Для старта используй VS Code или онлайн-песочницы.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 3: Как сохранять код и запускать -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>💾 Как сохранять код и запускать?</h2>
+                <ul>
+                    <li><strong>VS Code / Sublime Text</strong> → создай файл с расширением <code>.html</code> или <code>.js</code>.</li>
+                    <li><strong>Сохраняй через Ctrl+S (Cmd+S)</strong> — важная привычка.</li>
+                    <li><strong>HTML + JS:</strong> дважды кликни по <code>index.html</code> → откроется в браузере.</li>
+                    <li><strong>Node.js:</strong> сохрани <code>script.js</code>, запусти через <code>node script.js</code>.</li>
+                </ul>
+                <div class="code-block">
+                    // Файл main.js<br>
+                    let userName = "Елена";<br>
+                    console.log("Привет, " + userName);
+                </div>
+                <p>⚠️ После изменений сохраняй файл и перезагружай страницу (F5).</p>
+            </div>
+        </div>
+
+        <!-- Слайд 4: Комментарии в коде -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>📌 Комментарии — объясняем код</h2>
+                <p>Комментарии не выполняются, они для людей. Помогают понять логику.</p>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>// Однострочный</h3>
+                        <div class="code-block">// Это комментарий<br>let x = 10; // пояснение</div>
+                    </div>
+                    <div class="card">
+                        <h3>/* Многострочный */</h3>
+                        <div class="code-block">/*<br>  Можно писать<br>  несколько строк<br>*/</div>
+                    </div>
+                </div>
+                <div class="example-block">
+                    <p>💡 Зачем? Документировать сложные участки, временно отключать код.</p>
+                    <div class="code-block">
+                        let total = 100;<br>
+                        // total = total + 50; ← этот код временно не работает<br>
+                        console.log(total); // Выведет 100
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 5: Переменные - контейнеры для данных -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>📦 Переменные — контейнеры для данных</h2>
+                <p>Переменная хранит значение (число, текст, true/false). Это как коробка с именем.</p>
+                <div class="code-block">
+                    let возраст = 25;<br>
+                    let имя = "Артем";<br>
+                    let isStudent = true;
+                </div>
+                <h3>Как создать переменную в JS?</h3>
+                <ul>
+                    <li><code>let</code> — современный стандарт (значение можно менять).</li>
+                    <li><code>const</code> — константа, нельзя переназначить.</li>
+                    <li><code>var</code> — старый способ (лучше не использовать).</li>
+                </ul>
+                <div class="code-block">
+                    let city = "Москва";<br>
+                    const PI = 3.14159;<br>
+                    city = "Санкт-Петербург"; // ✅ можно<br>
+                    // PI = 3.14; ❌ Ошибка!
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 6: Правила имен переменных -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>✏️ Как называть переменные (примеры)</h2>
+                <ul>
+                    <li>Имя может содержать буквы, цифры, символы <code>$</code> и <code>_</code>.</li>
+                    <li>Не может начинаться с цифры.</li>
+                    <li>Регистр важен: <code>myVar</code> и <code>myvar</code> — разные.</li>
+                    <li>Используй осмысленные имена: <code>userAge</code>, <code>totalPrice</code> (camelCase).</li>
+                </ul>
+                <div class="example-block">
+                    <p>✅ <strong>Правильные имена:</strong></p>
+                    <div class="code-block">
+                        let firstName = "Ольга";<br>
+                        let _private = 123;<br>
+                        let score2025 = 99;
+                    </div>
+                    <p>❌ <strong>Неправильные имена:</strong></p>
+                    <div class="code-block">
+                        // let 1stPlace = "gold";   // ошибка: начинается с цифры<br>
+                        // let my-name = "js";      // дефис не разрешен
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 7: Живой пример с переменными -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🎯 Живой пример: переменные в действии</h2>
+                <div class="code-block">
+                    // Объявляем переменные<br>
+                    let product = "Ноутбук";<br>
+                    let price = 75000;<br>
+                    let discount = 0.15;<br>
+                    let finalPrice = price - (price * discount);<br><br>
+                    console.log("Товар: " + product);<br>
+                    console.log("Цена со скидкой: " + finalPrice + " ₽");<br><br>
+                    price = 82000;<br>
+                    finalPrice = price - (price * discount);<br>
+                    console.log("Новая финальная цена: " + finalPrice);
+                </div>
+                <div class="example-block">
+                    <p>📢 В консоли браузера (F12):</p>
+                    <div class="code-block">
+                        Товар: Ноутбук<br>
+                        Цена со скидкой: 63750 ₽<br>
+                        Новая финальная цена: 69700 ₽
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 8: let vs const подробнее -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>⚡ let vs const (что выбрать?)</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>let (изменяемая)</h3>
+                        <div class="code-block">
+                            let count = 0;<br>
+                            count = count + 1;   // ✅<br>
+                            count = 100;         // ✅
+                        </div>
+                        <p>Используй, если значение будет меняться.</p>
+                    </div>
+                    <div class="card">
+                        <h3>const (неизменяемая)</h3>
+                        <div class="code-block">
+                            const birthYear = 1995;<br>
+                            // birthYear = 2000; ❌ Ошибка!
+                        </div>
+                        <p>Идеально для чисел, строк, которые не должны меняться.</p>
+                    </div>
+                </div>
+                <div class="example-block">
+                    <p>🧠 <strong>Важно:</strong> const защищает от случайного переназначения — меньше багов!</p>
+                    <div class="code-block">const COLOR_RED = "#FF0000";<br>let userChoice = COLOR_RED;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 9: Типы данных -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>📊 Какие значения можно хранить?</h2>
+                <ul>
+                    <li><strong>number</strong> — числа: <code>let age = 28;</code></li>
+                    <li><strong>string</strong> — текст: <code>let name = "Алиса";</code></li>
+                    <li><strong>boolean</strong> — true/false: <code>let isLogged = true;</code></li>
+                    <li><strong>undefined</strong> — значение не задано: <code>let x;</code></li>
+                    <li><strong>null</strong> — «пусто», намеренное отсутствие.</li>
+                </ul>
+                <div class="code-block">
+                    let price = 99.9;           // число<br>
+                    let message = "Hello!";     // строка<br>
+                    let isOpen = false;         // булево<br>
+                    let data;                   // undefined
+                </div>
+                <div class="example-block">
+                    <p>🔍 Узнать тип переменной через <code>typeof</code>:</p>
+                    <div class="code-block">console.log(typeof price);   // "number"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 10: Частые ошибки новичков -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>⚠️ Частые ошибки новичков</h2>
+                <ul>
+                    <li><strong>Не объявили переменную</strong> → ReferenceError</li>
+                    <li><strong>Использовать переменную до объявления</strong> (временная мертвая зона)</li>
+                    <li><strong>Путать кавычки</strong> — закрывайте строки одинаково</li>
+                    <li><strong>Пробелы и регистр</strong> — myVariable и myvariable разные</li>
+                </ul>
+                <div class="example-block">
+                    <p>❌ Пример ошибки:</p>
+                    <div class="code-block">
+                        // забыли let/const<br>
+                        city = "Paris";  // плохая практика<br>
+                        // правильно:<br>
+                        let city = "Paris";
+                    </div>
+                    <p>✅ Всегда используй <code>'use strict'</code> или пиши let/const.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 11: Твой первый скрипт -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🧪 Твой первый скрипт — попробуй!</h2>
+                <p>Открой консоль браузера (F12) и скопируй этот код:</p>
+                <div class="code-block">
+                    // Создаем переменные о себе<br>
+                    let myName = "Твое имя";<br>
+                    let myAge = 20;<br>
+                    let hobby = "JavaScript";<br><br>
+                    console.log("Привет! Меня зовут " + myName);<br>
+                    console.log("Мне " + myAge + " лет");<br>
+                    console.log("Я люблю " + hobby);<br><br>
+                    myAge = myAge + 1;<br>
+                    console.log("В следующем году будет " + myAge);
+                </div>
+                <div class="example-block">
+                    <p>🎉 <strong>Итог:</strong> Ты объявил переменные, присвоил значения и вывел в консоль!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 12: Краткая памятка -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>📌 Краткая памятка</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>Создание переменной</h3>
+                        <div class="code-block">let имя = значение;<br>const ИМЯ = значение;</div>
+                    </div>
+                    <div class="card">
+                        <h3>Примеры</h3>
+                        <div class="code-block">let color = "синий";<br>const MAX_SIZE = 100;</div>
+                    </div>
+                </div>
+                <hr>
+                <ul>
+                    <li>📁 Куда писать код: в консоль, тег &lt;script&gt;, внешний .js файл</li>
+                    <li>💾 Сохранять: Ctrl+S, обновлять страницу</li>
+                    <li>💬 Комментарии: // и /* */</li>
+                    <li>📦 Переменные: let / const, camelCase</li>
+                </ul>
+                <div class="example-block">
+                    <p>⭐ <strong>Золотое правило:</strong> читаемый код — счастливый разработчик!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 13: Бонус - prompt интерактив -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>✨ Бонус: меняем переменные через prompt()</h2>
+                <p>Вставь в консоль браузера и введи своё имя:</p>
+                <div class="code-block">
+                    let userName = prompt("Как тебя зовут?");<br>
+                    let greeting = "Привет, " + userName + "! Добро пожаловать в JS!";<br>
+                    console.log(greeting);<br>
+                    alert(greeting);
+                </div>
+                <div class="example-block">
+                    <p>✅ Это показывает, как переменные работают с пользовательским вводом.</p>
+                    <p>🔄 <strong>Итог:</strong> переменные хранят данные, которые можно использовать, изменять и показывать.</p>
+                </div>
+                <!-- Маленькая сетка для эстетики -->
+                <div class="grid-demo two-col" style="margin-top: 20px;">
+                    <div>✨ Гибкость JS</div>
+                    <div>📐 Простота переменных</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Навигация -->
+    <div class="nav-controls">
+        <button id="prevBtn">◀ Назад</button>
+        <button id="nextBtn">Вперед ▶</button>
+    </div>
+    <div class="slide-number" id="slideCounter">Слайд 1 / 13</div>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const slidesContainer = document.getElementById('slidesContainer');
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+
+    function updateSlide() {
+        const offset = -currentIndex * 100;
+        slidesContainer.style.transform = `translateX(${offset}%)`;
+        document.getElementById('slideCounter').innerText = `Слайд ${currentIndex+1} / ${totalSlides}`;
+    }
+
+    function nextSlide() {
+        if (currentIndex < totalSlides - 1) {
+            currentIndex++;
+            updateSlide();
+        }
+    }
+
+    function prevSlide() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateSlide();
+        }
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', nextSlide);
+    document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    updateSlide();
+</script>
+</body>
+</html>
